@@ -59,7 +59,11 @@ class Capybara::Driver::RackTest < Capybara::Driver::Base
         driver.process(method, self[:href].to_s)
       elsif (tag_name == 'input' and %w(submit image).include?(type)) or
           ((tag_name == 'button') and type.nil? or type == "submit")
-        Form.new(driver, form).submit(self)
+        if form.nil?
+          raise Capybara::OrphanedSubmitButton, "The button #{self["name"].inspect} (#{self.path}) does not belong to a form and therefore cannot be clicked."
+        else
+          Form.new(driver, form).submit(self)
+        end
       end
     end
 

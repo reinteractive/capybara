@@ -248,5 +248,10 @@ shared_examples_for "click_button" do
       @session.click_button('With blank action')
       @session.body.should include('Postback')
     end
+
+    it "should inform accurately when orphan buttons are clicked" do
+      @session.visit('/form')
+      lambda { @session.click_button('orphan') }.should raise_error(Capybara::OrphanedSubmitButton)
+    end
   end
 end
